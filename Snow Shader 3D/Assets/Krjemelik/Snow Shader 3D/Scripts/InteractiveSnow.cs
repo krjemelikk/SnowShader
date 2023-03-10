@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -11,26 +7,20 @@ public class InteractiveSnow : MonoBehaviour
     [SerializeField] private Texture _stepPrint;
     [SerializeField] private Material _snowMaterial;
     [SerializeField] private Transform[] _trailsPositions; // all points on which trails will be drawn
-    [SerializeField] private float _drawDistance = 0.3f; // the distance between the terrain and the point where the trail will be drawn
-   
+
+    [SerializeField]
+    private float _drawDistance = 0.3f; // the distance between the terrain and the point where the trail will be drawn
+
     private Material _heightMapUpdate;
     private CustomRenderTexture _snowHeightMap;
-    
+
     private int _index = 0;
 
     // Shaders properties
-    private readonly int DrawPosition;
-    private readonly int DrawAngle;
-    private readonly int DrawBrush;
-    private readonly int HeightMap;
-
-    public InteractiveSnow()
-    { 
-        DrawPosition = Shader.PropertyToID("_DrawPosition"); 
-        DrawAngle = Shader.PropertyToID("_DrawAngle"); 
-        DrawBrush = Shader.PropertyToID("_DrawBrush"); 
-        HeightMap = Shader.PropertyToID("_HeightMap");
-    }
+    private readonly int DrawPosition = Shader.PropertyToID("_DrawPosition");
+    private readonly int DrawAngle = Shader.PropertyToID("_DrawAngle");
+    private readonly int DrawBrush = Shader.PropertyToID("_DrawBrush");
+    private readonly int HeightMap = Shader.PropertyToID("_HeightMap");
 
     private void Start()
     {
@@ -54,15 +44,12 @@ public class InteractiveSnow : MonoBehaviour
         var terrain = gameObject.GetComponent<Terrain>();
         terrain.materialTemplate = material;
         terrain.materialTemplate.SetTexture(HeightMap, _snowHeightMap);
-        var terrainData = terrain.terrainData;
-
 
         _snowHeightMap.Initialize();
     }
 
     private void DrawTrails()
     {
-        var trailNum = _index;
         var trail = _trailsPositions[_index];
 
         Ray ray = new Ray(trail.transform.position, Vector3.down);
@@ -84,6 +71,7 @@ public class InteractiveSnow : MonoBehaviour
         if (_index >= _trailsPositions.Length)
             _index = 0;
     }
+
     private CustomRenderTexture CreateHeightMap(int weight, int height, Material material)
     {
         var texture = new CustomRenderTexture(weight, height);
@@ -96,6 +84,7 @@ public class InteractiveSnow : MonoBehaviour
 
         return texture;
     }
+
     private Material CreateHeightMapUpdate(Shader shader, Texture stepPrint)
     {
         var material = new Material(shader);
